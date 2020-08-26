@@ -4,7 +4,6 @@ import sys, pygame
 def draw_triangle(screen, x, y, size):
         pygame.draw.polygon(screen,white,[[x,y], [x+size,y], [x,y-size]])
 
-        pygame.draw.polygon(screen,green,[[size+x,y-size], [x+size,y], [x,y-size]]) #this creates an opposite triangle of a different colour so that we can visualise the triangles in each other
         #I chose green for this because green is cool and lets be different!
 
 ############################################################################################# 
@@ -14,14 +13,15 @@ def draw_triangle(screen, x, y, size):
 
 def sierpinski(screen, x, y, size):
     if size < 4: #after triangle size is less than 4px terminate. While they get pretty low resolution I chose this because the pattern looks nice here.
+        draw_triangle(screen, x, y, size)
         return
 
-    draw_triangle(screen, x, y, size)
     sierpinski(screen, x, y, size/2)
     sierpinski(screen, x+size/2, y, size/2)
     sierpinski(screen, x, y-size/2, size/2)
-    
-    
+        
+############################################################################################# 
+ialize the game engine
 pygame.init()
  
 # Define the colors we will use in RGB format

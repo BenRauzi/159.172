@@ -1,0 +1,6 @@
+Some notes:
+
+I have used +/- ints to determine movement direction instead of if/else
+This just made more sense to me
+
+Have also included caterpillar_tut.py just because I made a few changes.
