@@ -337,7 +337,7 @@ while not done:
     pygame.draw.line(screen, RED, (0, height), (width, height))
 
     # create an image (Surface) of the text
-    text = font.render('Score = ' + str(score), True, (255, 0, 0))
+    text = font.render('Score = ' + str(score), True, (255, 255, 255))
 
     # get the bounding box for the image
     textrect = text.get_rect()
