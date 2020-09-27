@@ -48,15 +48,15 @@ class BSTMap:
 	def _bstSearch(self, subtree, min, max, dict):
 		if subtree is None:
 			return None
-		elif subtree.key <= max and subtree.key >= min:
-			left = self._bstSearch(subtree.left, min, max, dict)
-			right = self._bstSearch(subtree.right, min, max, dict)
-			dict[subtree.key] = subtree.value
+		elif min <= subtree.key <= max: #if value is within the range 
+			left = self._bstSearch(subtree.left, min, max, dict) #search the left tree for values within range
+			right = self._bstSearch(subtree.right, min, max, dict) #search the right tree
+			dict[subtree.key] = subtree.value #add value to the dict
 			
-			if left != None:
-				dict[left.key] = left.value
+			if left != None: 
+				dict[left.key] = left.value #if the left tree has a valid value then add it to the dict
 			if right != None:
-				dict[right.key] = right.value
+				dict[right.key] = right.value #if the right subtree is valid add it to the dict
 		elif subtree.key > max:
 			return self._bstSearch(subtree.left, min, max, dict)
 		elif subtree.key < min:
