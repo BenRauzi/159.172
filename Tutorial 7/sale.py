@@ -19,3 +19,5 @@ sale.add( 50, 'table' )
     
 print(sale.valueOf( 5 ))
 print(sale.valuesOf(4,8))
+
+# print(sale._bstSearch(sale._root, 51, 52))
