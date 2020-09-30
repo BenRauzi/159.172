@@ -67,6 +67,16 @@ def unvisitedneighbours(curpos):
                     free.append(newpos)     
     return free
 
+def nearFinish(curpos):
+    # Return list of unvisited positions that can be reached from current position
+    x = curpos[0]
+    y = curpos[1]
+    for newpos in [(x+1,y),(x-1,y),(x,y+1),(x,y-1)]:
+            if the_maze.grid[newpos[0]][newpos[1]].status == 5:
+                print("Done")
+                return newpos  
+    return False
+
 def visitedneighbours(curpos):
     # Return list of unvisited positions that can be reached from current position
     x = curpos[0]
@@ -111,14 +121,36 @@ def depthfirsttraversal(curpos, previous_path=[]):
     else:
         moveto(curpos, 4)
 
-
+search_done = False
 def depthfirstsearch(curpos):
-    # Perform a depth-first search to find the exit
-    pass
+    global search_done
 
-def breadthfirstsearch(curpos):
-    # Perform a breadth-first search to find the exit
-    pass
+    result = nearFinish(curpos)
+    if result != False:
+        search_done = True
+
+    if search_done == True:
+        moveto(result, 5)
+        return True
+        
+    neighbourlist = unvisitedneighbours(curpos)
+    moveto(curpos, 3)
+    # print(neighbourlist)
+    if len(neighbourlist) > 0:    
+        for neighbour in neighbourlist:
+
+            moveto(neighbour, 3)
+            
+            depthfirstsearch(neighbour)
+
+            if search_done == True:
+                return True
+            moveto(curpos,4)
+    else:
+        moveto(curpos, 4)
+
+def breadthfirstsearch(curpos, queue=[], visited=[]):
+  pass
 
 def tokencollection(curpos):
     # Collect all tokens in topological order

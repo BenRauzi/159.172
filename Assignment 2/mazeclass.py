@@ -140,8 +140,9 @@ class Maze:
     def draw_bot(self,screen, i, j):
         rows = self.rows
         columns = self.columns
-        pygame.draw.rect(screen,white,[j * (1000 / columns), i * (500 / rows), 
-                                        (1000 / columns), (500 / rows)])
+        #Removed white rect behind bot so that you can see the colour behind it, and because it caused visual 'bugs' (didn't look good when it ran over blocks it'd already ran over and had white background)
+        # pygame.draw.rect(screen,white,[j * (1000 / columns), i * (500 / rows), 
+        #                                 (1000 / columns), (500 / rows)])
         pygame.draw.ellipse(screen,red,[j * (1000 / columns) + (1000 / (columns * 10)), 
                                          i * (500 / rows) + (500 / (rows * 10)), 
                                          ((1000 * 4)/ (columns * 5)), ((500 *4) / (rows * 5))])
