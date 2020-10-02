@@ -35,7 +35,6 @@ mazegrid =  [[2,2,2,2,2,2,2,2,5,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
 
 the_maze = mazeclass.Maze(mazegrid)
 
-
 ##########################################################
 
 # Some (silly) sample code for moving one step forward and backward
@@ -67,13 +66,23 @@ def unvisitedneighbours(curpos):
                     free.append(newpos)     
     return free
 
+def nearNeighbours(curpos):
+    # Return list of unvisited positions that can be reached from current position
+    x = curpos[0]
+    y = curpos[1]
+    free = []
+    for newpos in [(x+1,y),(x-1,y),(x,y+1),(x,y-1)]:
+            if 0 <= newpos[0] < the_maze.rows and 0 <= newpos[1] < the_maze.columns:
+                if the_maze.grid[newpos[0]][newpos[1]].status in [0, 3, 4]:
+                    free.append(newpos)     
+    return free
+
 def nearFinish(curpos):
     # Return list of unvisited positions that can be reached from current position
     x = curpos[0]
     y = curpos[1]
     for newpos in [(x+1,y),(x-1,y),(x,y+1),(x,y-1)]:
             if the_maze.grid[newpos[0]][newpos[1]].status == 5:
-                print("Done")
                 return newpos  
     return False
 
@@ -89,7 +98,7 @@ def visitedneighbours(curpos):
     return free
 
 def moveto(newpos, status, movebot=True):
-    # Mark the new position as being visited
+    # Mark the new position as being visitttted
     the_maze.grid[newpos[0]][newpos[1]].status = status
     # If required, move to the new position
     if movebot:
@@ -115,11 +124,11 @@ def depthfirsttraversal(curpos, previous_path=[]):
 
             moveto(neighbour, 3)
             
-            depthfirsttraversal(neighbour)
+            depthfirsttraversal(neighbour) #search branch recursively (depth first)
 
-            moveto(curpos,4)
+            moveto(curpos,4)#move back to previous square to show moving backwards to original position
     else:
-        moveto(curpos, 4)
+        moveto(curpos, 4) # move back to the INTERSECTION where the recursive calls were made
 
 search_done = False
 def depthfirstsearch(curpos):
@@ -130,7 +139,7 @@ def depthfirstsearch(curpos):
         search_done = True
 
     if search_done == True:
-        moveto(result, 5)
+        moveto(result, 5) #move to the final cell
         return True
         
     neighbourlist = unvisitedneighbours(curpos)
@@ -141,20 +150,73 @@ def depthfirstsearch(curpos):
 
             moveto(neighbour, 3)
             
-            depthfirstsearch(neighbour)
+            depthfirstsearch(neighbour) #search branch recursively (depth first)
 
             if search_done == True:
                 return True
-            moveto(curpos,4)
+            moveto(curpos,4) #move back to previous square to show moving backwards to original position
     else:
-        moveto(curpos, 4)
+        moveto(curpos, 4) # move back to the INTERSECTION where the recursive calls were made
 
 def breadthfirstsearch(curpos, queue=[], visited=[]):
-  pass
+    visited.append(curpos)
+    queue.append([curpos])
+    while queue != []:
+    # dequeue next vertex
+        path = queue.pop(0)
+        newpos = path[-1]
 
-def tokencollection(curpos):
-    # Collect all tokens in topological order
-    pass
+        #helps with visualisation of the search
+        # moveto(newpos, 3)
+
+        finished = nearFinish(newpos)
+        if finished:
+            for i in path:
+                moveto(i, 3)
+            moveto(finished, 5)
+            break
+
+        neighbours = [i for i in nearNeighbours(newpos) if i not in visited]
+
+        for neighbour in neighbours:
+            if neighbour not in visited:
+                visited.append(neighbour)
+                
+                queue.append(path + [neighbour])
+
+                
+
+def tokencollection(curpos, queue=[], visited=[]):
+    visited.append(curpos)
+    queue.append([curpos])
+
+    while queue != []:
+    # dequeue next vertex
+        path = queue.pop(0)
+        newpos = path[-1]
+
+        #checks if there is a token in the current square AND if that token is of CORRECT PRECEDENCE
+        #if they are of incorrect precedence we can forget them, as quickest path must be recalculated from the new position once we find a valid token
+        nearTokens = [x for x in the_maze.tokens if x[0] == newpos[0] and x[1] == newpos[1] and x[2] == min(map(lambda i: i[2], the_maze.tokens))]
+        if nearTokens != []:
+
+            for i in path:
+                if the_maze.grid[i[0]][i[1]].status == 0 or i == path[0]: #check if cells are unvisited
+                    moveto(i, 3)
+                elif i != path[0]: #on the first iteration they will not have left the cell, so does not need to be marked revisited
+                    moveto(i, 4) #if they are visited, set to revisited
+
+            the_maze.tokens.remove(nearTokens[0]) #remove token As it has been found
+            tokencollection(newpos, [], []) #scan for the next valid token
+            break
+
+        neighbours = [i for i in nearNeighbours(newpos) if i not in visited]
+
+        for neighbour in neighbours:
+            if neighbour not in visited:
+                visited.append(neighbour)
+                
+                queue.append(path + [neighbour])
 
 # Loop until the user clicks the close button.
 done=False
@@ -180,11 +242,11 @@ while done==False:
                     depthfirstsearch((the_maze.bot_xcoord, the_maze.bot_ycoord))
                 if event.key == pygame.K_b:
                     the_maze.reset(mazegrid)
-                    breadthfirstsearch((the_maze.bot_xcoord, the_maze.bot_ycoord))
+                    breadthfirstsearch((the_maze.bot_xcoord, the_maze.bot_ycoord), [], [])
                 if event.key == pygame.K_t:
                     the_maze.reset(mazegrid)
                     the_maze.display_tokens()
-                    tokencollection((the_maze.bot_xcoord, the_maze.bot_ycoord))
+                    tokencollection((the_maze.bot_xcoord, the_maze.bot_ycoord), [], [])
                          
         the_maze.display_maze(screen)
         # Limit to 50 frames per second
