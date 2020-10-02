@@ -86,17 +86,6 @@ def nearFinish(curpos):
                 return newpos  
     return False
 
-def visitedneighbours(curpos):
-    # Return list of unvisited positions that can be reached from current position
-    x = curpos[0]
-    y = curpos[1]
-    free = []
-    for newpos in [(x+1,y),(x-1,y),(x,y+1),(x,y-1)]:
-            if 0 <= newpos[0] < the_maze.rows and 0 <= newpos[1] < the_maze.columns:
-                if the_maze.grid[newpos[0]][newpos[1]].status == 0 or the_maze.grid[newpos[0]][newpos[1]].status == 3:
-                    free.append(newpos)     
-    return free
-
 def moveto(newpos, status, movebot=True):
     # Mark the new position as being visitttted
     the_maze.grid[newpos[0]][newpos[1]].status = status
