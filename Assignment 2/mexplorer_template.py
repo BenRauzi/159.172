@@ -173,8 +173,6 @@ def breadthfirstsearch(curpos, queue=[], visited=[]):
                 
                 queue.append(path + [neighbour])
 
-                
-
 def tokencollection(curpos, queue=[], visited=[]):
     visited.append(curpos)
     queue.append([curpos])
