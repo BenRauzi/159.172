@@ -116,8 +116,9 @@ def depthfirsttraversal(curpos, previous_path=[]):
             depthfirsttraversal(neighbour) #search branch recursively (depth first)
 
             moveto(curpos,4)#move back to previous square to show moving backwards to original position
+                            #AND move back to the INTERSECTION where the recursive calls were made
     else:
-        moveto(curpos, 4) # move back to the INTERSECTION where the recursive calls were made
+        moveto(curpos, 4) #colour the last square (in a Dead end)  in BLUE - While it is technically only visited once Catherine said this was her preference
 
 search_done = False
 def depthfirstsearch(curpos):
@@ -194,6 +195,10 @@ def tokencollection(curpos, queue=[], visited=[]):
                     moveto(i, 4) #if they are visited, set to revisited
 
             the_maze.tokens.remove(nearTokens[0]) #remove token As it has been found
+
+            if the_maze.tokens == []: #If all the tokens are found go to the exit
+                breadthfirstsearch(newpos, [], []) #find the exit using BFS
+                return
             tokencollection(newpos, [], []) #scan for the next valid token
             break
 
