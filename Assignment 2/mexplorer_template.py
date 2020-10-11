@@ -110,8 +110,6 @@ def depthfirsttraversal(curpos, previous_path=[]):
     # print(neighbourlist)
     if len(neighbourlist) > 0:    
         for neighbour in neighbourlist:
-
-            moveto(neighbour, 3)
             
             depthfirsttraversal(neighbour) #search branch recursively (depth first)
 
