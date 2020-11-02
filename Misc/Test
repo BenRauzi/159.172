@@ -1,0 +1,10 @@
+def keep(s):
+    if s[1] > 400:
+       return False
+    else:
+        return True
+
+snowflake_list = [[1,2], [3,400], [400,3], [2,1], [405,1], [1, 405], [405,405]]
+new_list = list(filter(keep, snowflake_list))
+print(new_list)
+
